@@ -30,11 +30,7 @@ public class CandidateStore {
     }
 
     public void add(Candidate candidate) {
-        int currentID;
-        do {
-            currentID = lastID.get();
-        } while (!lastID.compareAndSet(currentID, currentID + 1));
-        candidate.setId(lastID.get());
+        candidate.setId(lastID.incrementAndGet());
         candidates.put(candidate.getId(), candidate);
     }
 
