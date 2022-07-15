@@ -31,11 +31,7 @@ public class PostStore {
     }
 
     public void add(Post post) {
-        int currentID;
-        do {
-            currentID = lastID.get();
-        } while (!lastID.compareAndSet(currentID, currentID + 1));
-        post.setId(lastID.get());
+        post.setId(lastID.incrementAndGet());
         posts.put(post.getId(), post);
     }
 
