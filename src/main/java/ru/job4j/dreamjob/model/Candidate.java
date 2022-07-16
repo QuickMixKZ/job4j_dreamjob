@@ -10,8 +10,6 @@ public class Candidate {
     private String description;
     private LocalDateTime created;
 
-    private byte[] photo;
-
     public Candidate() { }
 
     public Candidate(int id, String name) {
@@ -56,14 +54,6 @@ public class Candidate {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
     }
 
     @Override
