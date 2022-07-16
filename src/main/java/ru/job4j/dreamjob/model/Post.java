@@ -9,6 +9,8 @@ public class Post {
     private String description;
     private LocalDateTime created;
 
+    private City city;
+
     private boolean visible;
 
     public Post() { }
