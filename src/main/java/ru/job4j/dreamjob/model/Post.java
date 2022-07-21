@@ -12,12 +12,19 @@ public class Post {
     private City city;
 
     private boolean visible;
+    private int cityID;
 
     public Post() { }
 
     public Post(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Post(int id, String name, int cityID) {
+        this.id = id;
+        this.name = name;
+        this.cityID = cityID;
     }
 
     public Post(int id, String name, String description, LocalDateTime created) {
@@ -73,6 +80,14 @@ public class Post {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public int getCityID() {
+        return cityID;
+    }
+
+    public void setCityID(int cityID) {
+        this.cityID = cityID;
     }
 
     @Override
