@@ -34,6 +34,15 @@ public class Post {
         this.created = created;
     }
 
+    public Post(int id, String name, String description, LocalDateTime created, boolean visible, int cityID) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.created = created;
+        this.visible = visible;
+        this.cityID = cityID;
+    }
+
     public String getDescription() {
         return description;
     }
