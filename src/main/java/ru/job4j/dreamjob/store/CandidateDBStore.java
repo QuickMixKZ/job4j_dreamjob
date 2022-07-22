@@ -1,14 +1,13 @@
 package ru.job4j.dreamjob.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.dreamjob.model.Candidate;
-import ru.job4j.dreamjob.model.Post;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.ByteArrayInputStream;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +15,10 @@ import java.util.List;
 public class CandidateDBStore {
 
     private final BasicDataSource pool;
-
     public CandidateDBStore(BasicDataSource pool) {
         this.pool = pool;
     }
+    private static final Logger LOG = LoggerFactory.getLogger(CandidateDBStore.class.getName());
 
     public List<Candidate> findAll() {
         List<Candidate> candidates = new ArrayList<>();
@@ -28,22 +27,29 @@ public class CandidateDBStore {
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"), it.getString("description")));
+                    Candidate candidate = new Candidate(it.getInt("id"),
+                            it.getString("name"),
+                            it.getString("description"),
+                            it.getTimestamp("created").toLocalDateTime(),
+                            it.getBytes("photo"));
+                    candidates.add(candidate);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in CandidateDBStore", e);
         }
         return candidates;
     }
 
     public Candidate add(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name, description) VALUES (?, ?)",
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name, description, created, photo) VALUES (?, ?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, candidate.getName());
             ps.setString(2, candidate.getDescription());
+            ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setBinaryStream(4, new ByteArrayInputStream(candidate.getPhoto()));
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -51,20 +57,21 @@ public class CandidateDBStore {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in CandidateDBStore", e);
         }
         return candidate;
     }
 
     public void update(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("UPDATE candidate SET name = (?), description = (?) WHERE id = (?)")) {
+             PreparedStatement ps = cn.prepareStatement("UPDATE candidate SET name = (?),  description = (?), photo = (?) WHERE id = (?)")) {
             ps.setString(1, candidate.getName());
             ps.setString(2, candidate.getDescription());
-            ps.setInt(3, candidate.getId());
+            ps.setBinaryStream(3, new ByteArrayInputStream(candidate.getPhoto()));
+            ps.setInt(4, candidate.getId());
             ps.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Exception in CandidateDBStore", e);
         }
     }
 
@@ -76,11 +83,15 @@ public class CandidateDBStore {
             ps.setInt(1, id);
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    result =  new Candidate(it.getInt("id"), it.getString("name"), it.getString("description"));
+                    result  = new Candidate(it.getInt("id"),
+                            it.getString("name"),
+                            it.getString("description"),
+                            it.getTimestamp("created").toLocalDateTime(),
+                            it.getBytes("photo"));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in CandidateDBStore", e);
         }
         return result;
     }
