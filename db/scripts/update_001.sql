@@ -1,5 +1,9 @@
 CREATE TABLE post (
     id SERIAL PRIMARY KEY,
-    city_id INTEGER,
-    name TEXT
+    name TEXT,
+    description TEXT,
+    created TIMESTAMP,
+    visible BOOLEAN,
+    city_id INTEGER
+
 );

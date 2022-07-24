@@ -53,7 +53,11 @@ public class PostDBStore {
             ps.setString(2, post.getDescription());
             ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
             ps.setBoolean(4, post.isVisible());
-            ps.setInt(5, post.getCity().getId());
+            if (post.getCity() == null) {
+                ps.setInt(5, post.getCityID());
+            } else {
+                ps.setInt(5, post.getCity().getId());
+            }
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -72,7 +76,11 @@ public class PostDBStore {
             ps.setString(1, post.getName());
             ps.setString(2, post.getDescription());
             ps.setBoolean(3, post.isVisible());
-            ps.setInt(4, post.getCity().getId());
+            if (post.getCity() == null) {
+                ps.setInt(4, post.getCityID());
+            } else {
+                ps.setInt(4, post.getCity().getId());
+            }
             ps.setInt(5, post.getId());
             ps.execute();
         } catch (SQLException e) {
