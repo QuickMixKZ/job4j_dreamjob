@@ -4,12 +4,9 @@ import org.junit.Test;
 import ru.job4j.dreamjob.Main;
 import ru.job4j.dreamjob.model.Post;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 public class PostDBStoreTest {
-
-    //private static PostDBStore store = new PostDBStore(new Main().loadPool());
 
     @Test
     public void whenCreatePost() {
@@ -17,7 +14,7 @@ public class PostDBStoreTest {
         Post post = new Post(0, "Java Job", 1);
         store.add(post);
         Post postInDb = store.findById(post.getId());
-        assertThat(postInDb.getName(), is(post.getName()));
+        assertEquals(post.getName(), postInDb.getName());
     }
 
     @Test
@@ -25,10 +22,10 @@ public class PostDBStoreTest {
         PostDBStore store = new PostDBStore(new Main().loadPool());
         Post post = new Post(0, "Java Job", 1);
         store.add(post);
-        Post updatedPost = new Post(0, "Python Job", 1);
-        store.update(updatedPost);
-        Post postInDb = store.findById(updatedPost.getId());
-        assertThat(postInDb.getName(), is(updatedPost.getName()));
+        post.setName("Python Developer");
+        store.update(post);
+        Post postInDb = store.findById(post.getId());
+        assertEquals(post.getName(), postInDb.getName());
     }
 
     @Test
@@ -36,9 +33,11 @@ public class PostDBStoreTest {
         PostDBStore store = new PostDBStore(new Main().loadPool());
         Post post = new Post(0, "Java Job");
         Post post1 = new Post(1, "Python Job");
-        store.add(post);
-        store.add(post1);
-        Post postInDb = store.findById(post1.getId());
-        assertThat(postInDb.getName(), is(post1.getName()));
+        post = store.add(post);
+        post1 = store.add(post1);
+        Post postInDB = store.findById(post.getId());
+        Post post1InDB = store.findById(post1.getId());
+        assertEquals(post.getName(), postInDB.getName());
+        assertEquals(post1.getName(), post1InDB.getName());
     }
 }

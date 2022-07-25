@@ -49,7 +49,7 @@ public class CandidateDBStore {
             ps.setString(1, candidate.getName());
             ps.setString(2, candidate.getDescription());
             ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-            ps.setBinaryStream(4, new ByteArrayInputStream(candidate.getPhoto()));
+            ps.setBinaryStream(4,  candidate.getPhoto() == null ? null : new ByteArrayInputStream(candidate.getPhoto()));
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -67,7 +67,7 @@ public class CandidateDBStore {
              PreparedStatement ps = cn.prepareStatement("UPDATE candidate SET name = (?),  description = (?), photo = (?) WHERE id = (?)")) {
             ps.setString(1, candidate.getName());
             ps.setString(2, candidate.getDescription());
-            ps.setBinaryStream(3, new ByteArrayInputStream(candidate.getPhoto()));
+            ps.setBinaryStream(3, candidate.getPhoto() == null ? null : new ByteArrayInputStream(candidate.getPhoto()));
             ps.setInt(4, candidate.getId());
             ps.execute();
         } catch (SQLException e) {
