@@ -42,7 +42,7 @@ public class UserDBStore {
     }
 
     public Optional<User> add(User user) {
-        Optional<User> result = Optional.of(user);
+        Optional<User> result = Optional.empty();
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement("INSERT INTO users(email, password) VALUES (?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -51,7 +51,8 @@ public class UserDBStore {
             ps.execute();
             try (ResultSet it = ps.getGeneratedKeys()) {
                 if (it.next()) {
-                    result.get().setId(it.getInt("id"));
+                    user.setId(it.getInt("id"));
+                    result = Optional.of(user);
                 }
             }
         } catch (PSQLException | SQLIntegrityConstraintViolationException e) {
