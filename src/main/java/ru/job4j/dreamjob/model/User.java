@@ -6,6 +6,7 @@ public class User {
     private int id;
     private String email;
     private String password;
+    private String name;
 
     public User() {
     }
@@ -13,17 +14,20 @@ public class User {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+        this.name = email;
     }
 
     public User(int id, String email, String password) {
         this.id = id;
         this.email = email;
+        this.name = email;
         this.password = password;
     }
 
     public User(int id, String email) {
         this.id = id;
         this.email = email;
+        this.name = email;
     }
 
     public int getId() {
@@ -50,6 +54,14 @@ public class User {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -68,4 +80,5 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, email, password);
     }
+
 }
