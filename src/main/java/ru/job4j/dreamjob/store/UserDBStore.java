@@ -55,8 +55,6 @@ public class UserDBStore {
                     result = Optional.of(user);
                 }
             }
-        } catch (PSQLException | SQLIntegrityConstraintViolationException e) {
-            result = Optional.empty();
         } catch (SQLException e) {
             LOG.error("Exception in UserDBStore", e);
         }
