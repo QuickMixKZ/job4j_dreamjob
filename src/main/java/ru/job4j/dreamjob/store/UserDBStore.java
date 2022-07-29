@@ -90,6 +90,25 @@ public class UserDBStore {
         return user;
     }
 
+    public Optional<User> findUserByEmailAndPwd(String email, String password) {
+        Optional<User> result = Optional.empty();
+        try (Connection cn = pool.getConnection();
+        PreparedStatement ps = cn.prepareStatement("SELECT * FROM users WHERE email = (?) AND password = (?)")) {
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet it = ps.executeQuery();
+            if (it.next()) {
+                User user = new User(it.getInt("id"),
+                        it.getString("email"),
+                        it.getString("password"));
+                result = Optional.of(user);
+            }
+        } catch (SQLException e) {
+            LOG.error("Exception in UserDBStore", e);
+        }
+        return result;
+    }
+
     public void deleteAll() {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement("DELETE FROM users")) {

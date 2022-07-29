@@ -54,6 +54,36 @@ public class UserDBStoreTest {
         assertEquals(user.get().getPassword(), userInDB.getPassword());
     }
 
+    @Test
+    public void whenAddUserThenLogin() {
+        String email = "123@mail.com";
+        String password = "123456";
+        User user = new User(email, password);
+        store.add(user);
+        Optional<User> loginUser = store.findUserByEmailAndPwd(email, password);
+        assertTrue(loginUser.isPresent());
+    }
+
+    @Test
+    public void whenAddUserThenLoginWithWrongEmail() {
+        String email = "123@mail.com";
+        String password = "123456";
+        User user = new User(email, password);
+        store.add(user);
+        Optional<User> loginUser = store.findUserByEmailAndPwd("other@link.com", password);
+        assertTrue(loginUser.isEmpty());
+    }
+
+    @Test
+    public void whenAddUserThenLoginWithWrongPassword() {
+        String email = "123@mail.com";
+        String password = "123456";
+        User user = new User(email, password);
+        store.add(user);
+        Optional<User> loginUser = store.findUserByEmailAndPwd(email, "qwerty");
+        assertTrue(loginUser.isEmpty());
+    }
+
     @After
     public void wipeTable() {
         store.deleteAll();
