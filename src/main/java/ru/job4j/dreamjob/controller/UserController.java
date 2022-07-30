@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/formRegisterUser")
+    @GetMapping("/registrationPage")
     public String registerUser(Model model) {
         model.addAttribute("user", new User(0, "Заполните поле"));
         return "registerUser";
